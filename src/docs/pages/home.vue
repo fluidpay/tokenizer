@@ -83,6 +83,7 @@ export default defineComponent({
         Pay
       </button>
       <pre>{{ exampleResponse }}</pre>
+      <pre>{{ validCard }}</pre>
     </div>
   </div>
 </template>
