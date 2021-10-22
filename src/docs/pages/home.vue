@@ -16,6 +16,11 @@ export default defineComponent({
     this.example = new Tokenizer({
       apikey: testapikey,
       container: this.$refs.example as HTMLDivElement,
+      // settings: {
+      //   payment: {
+      //     calculateFees: false
+      //   }
+      // },
       submission: (resp: any) => { 
         this.exampleResponse = resp
       },

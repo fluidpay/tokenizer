@@ -19,6 +19,9 @@ export default defineComponent({
         this.exampleFullResponse = resp
       },
       settings: {
+        payment: {
+          showTitle: true
+        },
         user: {
           showInline: true,
           showName: true,
@@ -32,9 +35,6 @@ export default defineComponent({
         },
         billing: {
           show: true,
-          showTitle: true
-        },
-        payment: {
           showTitle: true
         }
       }
