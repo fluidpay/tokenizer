@@ -16,6 +16,11 @@ export default defineComponent({
     this.example = new Tokenizer({
       apikey: testapikey,
       container: this.$refs.example as HTMLDivElement,
+      // settings: {
+      //   payment: {
+      //     calculateFees: false
+      //   }
+      // },
       submission: (resp: any) => { 
         this.exampleResponse = resp
       },
@@ -83,6 +88,7 @@ export default defineComponent({
         Pay
       </button>
       <pre>{{ exampleResponse }}</pre>
+      <pre>{{ validCard }}</pre>
     </div>
   </div>
 </template>
