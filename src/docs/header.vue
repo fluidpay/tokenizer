@@ -21,15 +21,20 @@ export default defineComponent({})
 
     .menu {
       display: flex;
-      flex-direction: row;
-      justify-content: center;
-      padding: $spacing;
+      flex-direction: column;
+      padding: $spacing $spacing 0 $spacing;
 
-      a {
-        color: $color-white;
-        font-size: 16px;
-        font-weight: bold;
-        margin: 0 $spacing-half 0 $spacing-half;
+      .row{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+
+        a {
+          color: $color-white;
+          font-size: 16px;
+          font-weight: bold;
+          margin: 0 $spacing-half $spacing-half $spacing-half;
+        }
       }
     }
   }
@@ -41,24 +46,31 @@ export default defineComponent({})
       FluidPay Tokenizer Form
     </div>
     <div class="menu">
-      <router-link to="/home">
-        Home
-      </router-link>
-      <router-link to="/methods">
-        Methods
-      </router-link>
-      <router-link to="/styles">
-        Styles
-      </router-link>
-      <router-link to="/sections">
-        Sections
-      </router-link>
-      <router-link to="/payments">
-        Payments
-      </router-link>
-      <router-link to="/threeds">
-        3D-Secure
-      </router-link>
+      <div class="row">
+        <router-link to="/home">
+          Home
+        </router-link>
+        <router-link to="/methods">
+          Methods
+        </router-link>
+        <router-link to="/styles">
+          Styles
+        </router-link>
+        <router-link to="/sections">
+          Sections
+        </router-link>
+      </div>
+      <div class="row">
+        <router-link to="/payments">
+          Payments
+        </router-link>
+        <router-link to="/calculatefees">
+          Calculate Fees
+        </router-link>
+        <router-link to="/threeds">
+          3D-Secure
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
