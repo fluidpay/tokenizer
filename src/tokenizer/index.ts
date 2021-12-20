@@ -6,12 +6,16 @@ export interface Constructor {
   url?: string
   apikey: string
   amount?: string
-  container: HTMLDivElement
+  container: HTMLDivElement | null
 
+  // Callbacks
   onLoad?: () => void
   onPaymentChange?: (type: string) => void
   validCard?: (valid: boolean) => void
+  achOnChange?: (data: any) => void
+  magStripeSwipe?: (data: any) => void
   submission: (response: any) => void
+
   settings?: {[key: string]: any}
 }
 
@@ -59,6 +63,11 @@ export default class Tokenizer {
       this.amount = info.amount
     }
 
+    // Check to see if container is null
+    if (info.container === null) {
+      throw new Error('Container cannot be null')
+    }
+
     // Set container
     let el: HTMLDivElement
     if (typeof info.container === 'string') {
@@ -75,6 +84,8 @@ export default class Tokenizer {
     // Set callbacks
     if (info.onLoad) { this.onLoad = info.onLoad }
     if (info.validCard) { this.validCard = info.validCard }
+    if (info.achOnChange) { this.achOnChange = info.achOnChange }
+    if (info.magStripeSwipe) { this.magStripeSwipe = info.magStripeSwipe }
     if (info.onPaymentChange) { this.onPaymentChange = info.onPaymentChange }
     if (info.submission) { this.submission = info.submission }
 
@@ -99,7 +110,7 @@ export default class Tokenizer {
   public create () { }
 
   public validate (info: Constructor) {
-    let el: HTMLDivElement
+    let el: HTMLDivElement | null
     if (typeof info.container === 'string') {
       el = document.querySelector(info.container) as any as HTMLDivElement
     } else {
@@ -117,7 +128,7 @@ export default class Tokenizer {
   }
 
   // Post message to iframe
-  public submit (amount:string) {
+  public submit (amount?: string) {
     this.postMessage({
       event: 'submit',
       data: { amount }
@@ -143,15 +154,13 @@ export default class Tokenizer {
 
   public onLoad: () => void = () => {}
   public validCard: (card: any) => void = () => {}
+  public achOnChange: (data: any) => void = () => {}
+  public magStripeSwipe: (data: any) => void = () => {}
   public onPaymentChange: (type: string) => void = () => {}
   public submission: (response: any) => void = () => {}
 
   private uuid (): string {
-    function s4 () {
-      return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1)
-    }
+    function s4 () { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1) }
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
   }
 
@@ -205,6 +214,12 @@ export default class Tokenizer {
           break
         case 'validCard':
           this.validCard(data)
+          break
+        case 'achOnChange':
+          this.achOnChange(data)
+          break
+        case 'magStripeSwipe':
+          this.magStripeSwipe(data)
           break
         case 'onPaymentChange':
           this.onPaymentChange(data.type)
