@@ -168,6 +168,9 @@ export default class Tokenizer {
     const iframe = document.createElement('iframe')
     iframe.src = this.url
 
+    // Set allow payment request
+    iframe.setAttribute('allow', 'payment')
+
     // Style
     iframe.style.display = 'block'
     iframe.style.border = 'none'
