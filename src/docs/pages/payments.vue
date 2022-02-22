@@ -24,9 +24,13 @@ export default defineComponent({
       settings: {
         payment: {
           showTitle: true,
-          types: ['card', 'ach', 'plaid'],
+          types: ['card', 'ach', 'plaid', 'stripe'],
           ach: {
-            sec_code: 'web'
+            sec_code: 'web',
+            showSecCode: true
+          },
+          card: {
+            strict_mode: false // Set to true to allow for 19 digit cards
           }
         }
       }
@@ -64,10 +68,15 @@ export default defineComponent({
             console.log(resp)
           },
           settings: {
+            processorId: '', // optional
             payment: {
-              types: ['card', 'ach', 'plaid'], // Default ['card']
+              types: ['card', 'ach', 'plaid', 'stripe'], // Default ['card']
               ach: {
-                sec_code: 'web' // Default web - web, ccd, ppd, tel
+                sec_code: 'web', // Default web - web, ccd, ppd, tel
+                showSecCode: false // Whether or not to show sec code field
+              },
+              card: {
+                strict_mode: false // Set to true to allow for 19 digit cards
               }
             }
           }
