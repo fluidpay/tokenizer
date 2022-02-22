@@ -5,10 +5,12 @@ export interface Constructor {
     url?: string;
     apikey: string;
     amount?: string;
-    container: HTMLDivElement;
+    container: HTMLDivElement | null;
     onLoad?: () => void;
     onPaymentChange?: (type: string) => void;
     validCard?: (valid: boolean) => void;
+    achOnChange?: (data: any) => void;
+    magStripeSwipe?: (data: any) => void;
     submission: (response: any) => void;
     settings?: {
         [key: string]: any;
@@ -35,11 +37,13 @@ export default class Tokenizer {
     isSurchargeable(state: string, bin: {
         card_type: string;
     }): boolean;
-    submit(amount: string): void;
+    submit(amount?: string): void;
     setExpDate(expDate: string): void;
     postMessage(msg: Message): void;
     onLoad: () => void;
     validCard: (card: any) => void;
+    achOnChange: (data: any) => void;
+    magStripeSwipe: (data: any) => void;
     onPaymentChange: (type: string) => void;
     submission: (response: any) => void;
     private uuid;
