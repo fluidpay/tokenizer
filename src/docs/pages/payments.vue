@@ -30,8 +30,9 @@ export default defineComponent({
             showSecCode: true
           },
           card: {
-            strict_mode: false // Set to true to allow for 19 digit cards
-          }
+            strict_mode: false, // Set to true to allow for 19 digit cards
+            requireCVV: true
+          },
         }
       }
     })
@@ -76,7 +77,8 @@ export default defineComponent({
                 showSecCode: false // Whether or not to show sec code field
               },
               card: {
-                strict_mode: false // Set to true to allow for 19 digit cards
+                strict_mode: false, // Set to true to allow for 19 digit cards
+                requireCVV: false
               }
             }
           }
