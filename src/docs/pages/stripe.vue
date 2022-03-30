@@ -17,7 +17,7 @@ export default defineComponent({
       container: this.$refs.example as HTMLDivElement,
       settings: {
         payment: {
-          processorId: 'c8l7eaisahsmvusv5r9g',
+          // processorId: 'c8l7eaisahsmvusv5r9g',
           types: ['stripe'],
           stripe: {
             // https://stripe.com/docs/stripe-js/appearance-api
