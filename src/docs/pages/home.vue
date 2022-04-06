@@ -16,12 +16,15 @@ export default defineComponent({
     this.example = new Tokenizer({
       apikey: testapikey,
       container: this.$refs.example as HTMLDivElement,
+      settings: {
+        guardian_enabled: true
+      },
       // settings: {
       //   payment: {
       //     calculateFees: false
       //   }
       // },
-      submission: (resp: any) => { 
+      submission: (resp: any) => {
         this.exampleResponse = resp
       },
       validCard: (card: any) => {

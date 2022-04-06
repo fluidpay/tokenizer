@@ -1,3 +1,6 @@
+import Guardian from "../../../fluidpay-guardian/src/guardian/guardian";
+import {GuardianBuilder} from "../../../fluidpay-guardian/src/models/guardian.interface";
+
 export interface Settings {
   [key: string]: any
 }
@@ -39,6 +42,7 @@ export default class Tokenizer {
   public iframe: HTMLIFrameElement
   public container: HTMLDivElement
   public settings: Settings = { id: '', apikey: '', amount: '' }
+  private readonly guardian?: Guardian
 
   constructor (info: Constructor) {
     this.validate(info)
@@ -47,13 +51,15 @@ export default class Tokenizer {
     if (!info.apikey) { throw new Error('apikey must be set!') }
     this.apikey = info.apikey
 
+    let baseURL = ''
     // Set url
     this.url = (info.url && info.url !== '' ? info.url : url) // Use constructor url passed, or default url var
     if (!info.url && window.location.href.indexOf('localhost') !== -1) {
-      this.url = localDevUrl.replace(/\/$/, '') + pathUrl
+      baseURL = localDevUrl.replace(/\/$/, '')
     } else {
-      this.url = this.url.replace(/\/$/, '') + pathUrl
+      baseURL = this.url.replace(/\/$/, '')
     }
+    this.url = baseURL + pathUrl
 
     // Add apikey to url
     this.url += '/' + this.apikey
@@ -99,6 +105,16 @@ export default class Tokenizer {
       this.settings.amount = this.amount
       this.setSettings(this.settings)
       this.onLoad() // Call on load
+    }
+
+    if (info.settings?.['guardian_enabled']) {
+      this.guardian = new Guardian({
+        url: baseURL,
+        apiKey: this.apikey,
+        type: 'tokenizer',
+        clearPeriod: info.settings?.['guardian_clear_period'] as number || 0
+      } as GuardianBuilder)
+      this.guardian.process()
     }
 
     // Add iframe
@@ -202,6 +218,12 @@ export default class Tokenizer {
     }
   }
 
+  private processGuardian(token: string) {
+    if (this.guardian) {
+      this.guardian.sendData(token)
+    }
+  }
+
   private messageListener (e: MessageEvent) {
     try {
       const msg: Message = JSON.parse(e.data)
@@ -214,6 +236,7 @@ export default class Tokenizer {
       switch (event) {
         case 'submission':
           this.submission(data)
+          this.processGuardian(data.token)
           break
         case 'validCard':
           this.validCard(data)
