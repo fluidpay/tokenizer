@@ -16,9 +16,6 @@ export default defineComponent({
     this.example = new Tokenizer({
       apikey: testapikey,
       container: this.$refs.example as HTMLDivElement,
-      settings: {
-        guardian_enabled: true
-      },
       // settings: {
       //   payment: {
       //     calculateFees: false

@@ -1,5 +1,4 @@
-import Guardian from "../../../fluidpay-guardian/src/guardian/guardian";
-import {GuardianBuilder} from "../../../fluidpay-guardian/src/models/guardian.interface";
+import {getGuardianData} from '../../../fluidpay-guardian/src/guardian/guardian'
 
 export interface Settings {
   [key: string]: any
@@ -42,7 +41,6 @@ export default class Tokenizer {
   public iframe: HTMLIFrameElement
   public container: HTMLDivElement
   public settings: Settings = { id: '', apikey: '', amount: '' }
-  private readonly guardian?: Guardian
 
   constructor (info: Constructor) {
     this.validate(info)
@@ -107,11 +105,6 @@ export default class Tokenizer {
       this.onLoad() // Call on load
     }
 
-    if (info.settings?.['guardian_enabled']) {
-      this.guardian = new Guardian()
-      this.guardian.process()
-    }
-
     // Add iframe
     this.container.appendChild(this.iframe)
   }
@@ -141,8 +134,9 @@ export default class Tokenizer {
   // Post message to iframe
   public submit (amount?: string) {
     const data = { amount: amount } as Record<string, any>
-    if (this.guardian) {
-      data['guardina'] = { events: this.guardian.getData() }
+    const guardianEvents = getGuardianData()
+    if (guardianEvents && guardianEvents.length) {
+      data['guardian'] = { events: guardianEvents }
     }
     this.postMessage({
       event: 'submit',
