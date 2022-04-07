@@ -21,7 +21,7 @@ export default defineComponent({
       //     calculateFees: false
       //   }
       // },
-      submission: (resp: any) => { 
+      submission: (resp: any) => {
         this.exampleResponse = resp
       },
       validCard: (card: any) => {
