@@ -37,7 +37,6 @@
     "vue": "^3.1.5",
     "vue-router": "^4.0.10",
     "vue-template-compiler": "^2.6.14",
-    "webpack-cli": "^4.7.2",
-    "fluidpay-guardian": "../fluidpay-guardian/"
+    "webpack-cli": "^4.7.2"
   }
 }
