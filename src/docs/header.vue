@@ -50,7 +50,7 @@ export default defineComponent({})
         <router-link to="/home">
           Home
         </router-link>
-        <router-link to="/methods?utm_source=api&utm_medium=something&utm_campaign=in_the_forest&utm_term=asdjsakldlaks&utm_content=methods">
+        <router-link to="/methods">
           Methods
         </router-link>
         <router-link to="/styles">

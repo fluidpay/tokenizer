@@ -47,15 +47,13 @@ export default class Tokenizer {
     if (!info.apikey) { throw new Error('apikey must be set!') }
     this.apikey = info.apikey
 
-    let baseURL = ''
     // Set url
     this.url = (info.url && info.url !== '' ? info.url : url) // Use constructor url passed, or default url var
     if (!info.url && window.location.href.indexOf('localhost') !== -1) {
-      baseURL = localDevUrl.replace(/\/$/, '')
+      this.url = localDevUrl.replace(/\/$/, '') + pathUrl
     } else {
-      baseURL = this.url.replace(/\/$/, '')
+      this.url = this.url.replace(/\/$/, '') + pathUrl
     }
-    this.url = baseURL + pathUrl
 
     // Add apikey to url
     this.url += '/' + this.apikey
