@@ -108,12 +108,7 @@ export default class Tokenizer {
     }
 
     if (info.settings?.['guardian_enabled']) {
-      this.guardian = new Guardian({
-        url: baseURL,
-        apiKey: this.apikey,
-        type: 'tokenizer',
-        clearPeriod: info.settings?.['guardian_clear_period'] as number || 0
-      } as GuardianBuilder)
+      this.guardian = new Guardian()
       this.guardian.process()
     }
 
@@ -145,9 +140,13 @@ export default class Tokenizer {
 
   // Post message to iframe
   public submit (amount?: string) {
+    const data = { amount: amount } as Record<string, any>
+    if (this.guardian) {
+      data['guardina'] = { events: this.guardian.getData() }
+    }
     this.postMessage({
       event: 'submit',
-      data: { amount }
+      data: data
     })
   }
 
@@ -218,12 +217,6 @@ export default class Tokenizer {
     }
   }
 
-  private processGuardian(token: string) {
-    if (this.guardian) {
-      this.guardian.sendData(token)
-    }
-  }
-
   private messageListener (e: MessageEvent) {
     try {
       const msg: Message = JSON.parse(e.data)
@@ -236,7 +229,6 @@ export default class Tokenizer {
       switch (event) {
         case 'submission':
           this.submission(data)
-          this.processGuardian(data.token)
           break
         case 'validCard':
           this.validCard(data)
