@@ -26,12 +26,14 @@ export default defineComponent({
           showTitle: true,
           types: ['card', 'ach', 'plaid', 'stripe'],
           ach: {
-            sec_code: 'web',
+            // sec_code: 'yep',
+            // secCodeList: ['hello', 'yep'],
             showSecCode: true
           },
           card: {
-            strict_mode: false // Set to true to allow for 19 digit cards
-          }
+            strict_mode: false, // Set to true to allow for 19 digit cards
+            requireCVV: true
+          },
         }
       }
     })
@@ -73,10 +75,12 @@ export default defineComponent({
               types: ['card', 'ach', 'plaid', 'stripe'], // Default ['card']
               ach: {
                 sec_code: 'web', // Default web - web, ccd, ppd, tel
+                secCodeList: ['web', 'ppd', 'ccd', 'tel'],
                 showSecCode: false // Whether or not to show sec code field
               },
               card: {
-                strict_mode: false // Set to true to allow for 19 digit cards
+                strict_mode: false, // Set to true to allow for 19 digit cards
+                requireCVV: false
               }
             }
           }

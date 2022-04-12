@@ -13,6 +13,19 @@ export default defineComponent({
     }
   },
   mounted () {
+    // Testing local storage for guardian stuff
+    var data = {
+      events: [
+        {
+          data: {
+            type: 'sift_action_happened',
+            action: 'hello world'
+          }
+        }
+      ]
+    } as any
+    localStorage.setItem('fp-guardian-results', JSON.stringify({value: data}))
+
     this.example = new Tokenizer({
       apikey: testapikey,
       container: this.$refs.example as HTMLDivElement,
@@ -21,7 +34,7 @@ export default defineComponent({
       //     calculateFees: false
       //   }
       // },
-      submission: (resp: any) => { 
+      submission: (resp: any) => {
         this.exampleResponse = resp
       },
       validCard: (card: any) => {

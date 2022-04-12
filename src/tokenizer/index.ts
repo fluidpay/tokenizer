@@ -129,9 +129,18 @@ export default class Tokenizer {
 
   // Post message to iframe
   public submit (amount?: string) {
+    // If there is guardian data send data to iframe
+    const guardianEvents = Tokenizer.getGuardianData()
+    if (guardianEvents) {
+      this.postMessage({
+        event: 'setGuardian',
+        data: guardianEvents
+      })
+    }
+
     this.postMessage({
       event: 'submit',
-      data: { amount }
+      data: { amount: amount }
     })
   }
 
@@ -200,6 +209,15 @@ export default class Tokenizer {
     if (height) {
       this.iframe.style.height = height + 'px'
     }
+  }
+
+
+  private static getGuardianData (): Record<string, any> {
+    const item = localStorage.getItem('fp-guardian-results');
+    if (!item) { return [] }
+    const parsed = JSON.parse(item) as { expr: number; value: Record<string, any> }
+    if (!parsed || !parsed.value) { return [] }
+    return parsed.value
   }
 
   private messageListener (e: MessageEvent) {

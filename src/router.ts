@@ -25,6 +25,10 @@ export default createRouter({
       component: () => import('@/docs/pages/payments.vue')
     },
     {
+      path: '/stripe',
+      component: () => import('@/docs/pages/stripe.vue')
+    },
+    {
       path: '/calculatefees',
       component: () => import('@/docs/pages/calculatefees.vue')
     },
