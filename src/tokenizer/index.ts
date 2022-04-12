@@ -129,14 +129,18 @@ export default class Tokenizer {
 
   // Post message to iframe
   public submit (amount?: string) {
-    const data = { amount: amount } as Record<string, any>
+    // If there is guardian data send data to iframe
     const guardianEvents = Tokenizer.getGuardianData()
-    if (guardianEvents && guardianEvents.length) {
-      data['guardian'] = { events: guardianEvents }
+    if (guardianEvents) {
+      this.postMessage({
+        event: 'setGuardian',
+        data: guardianEvents
+      })
     }
+
     this.postMessage({
       event: 'submit',
-      data: data
+      data: { amount: amount }
     })
   }
 
@@ -208,17 +212,13 @@ export default class Tokenizer {
   }
 
 
-  private static getGuardianData (): Record<string, any>[] {
+  private static getGuardianData (): Record<string, any> {
     const item = localStorage.getItem('fp-guardian-results');
-    if (!item) {
-      return []
-    }
-    const parsed = JSON.parse(item) as { expr: number; value: Record<string, any> };
-    if (!parsed || !parsed.value) {
-      return []
-    }
-    return Object.values(parsed.value);
-  };
+    if (!item) { return [] }
+    const parsed = JSON.parse(item) as { expr: number; value: Record<string, any> }
+    if (!parsed || !parsed.value) { return [] }
+    return parsed.value
+  }
 
   private messageListener (e: MessageEvent) {
     try {
