@@ -1,3 +1,5 @@
+import {IDBPDatabase, openDB} from 'idb'
+
 export interface Settings {
   [key: string]: any
 }
@@ -130,17 +132,18 @@ export default class Tokenizer {
   // Post message to iframe
   public submit (amount?: string) {
     // If there is guardian data send data to iframe
-    const guardianEvents = Tokenizer.getGuardianData()
-    if (guardianEvents) {
+    this.getGuardianData().then((guardianResult) => {
+      if (guardianResult.events?.length) {
+        this.postMessage({
+          event: 'setGuardian',
+          data: guardianResult
+        })
+      }
+    }).catch(() => {}).finally(() => {
       this.postMessage({
-        event: 'setGuardian',
-        data: guardianEvents
+        event: 'submit',
+        data: { amount: amount }
       })
-    }
-
-    this.postMessage({
-      event: 'submit',
-      data: { amount: amount }
     })
   }
 
@@ -212,13 +215,31 @@ export default class Tokenizer {
   }
 
 
-  private static getGuardianData (): Record<string, any> {
-    const item = localStorage.getItem('fp-guardian-results');
-    if (!item) { return [] }
-    const parsed = JSON.parse(item) as { expr: number; value: Record<string, any> }
-    if (!parsed || !parsed.value) { return [] }
-    return parsed.value
+  private async getGuardianData (): Promise<{
+    events: Record<string, unknown>[],
+    session_id: string
+  }> {
+    const DATA_STORE = 'guardian'
+    return this.connectDB().then(async (db) => {
+      const joinedEvents: any[] = []
+      joinedEvents.push(await db.get(DATA_STORE, 'utm_source') || [])
+      joinedEvents.push(await db.get(DATA_STORE, 'utm_medium') || [])
+      joinedEvents.push(await db.get(DATA_STORE, 'utm_campaign') || [])
+      joinedEvents.push(await db.get(DATA_STORE, 'utm_term') || [])
+      joinedEvents.push(await db.get(DATA_STORE, 'utm_content') || [])
+
+      const sessionID = await db.get(DATA_STORE, 'session_id') || ''
+      return {
+        events: joinedEvents
+        .reduce((acc, val) => acc.concat(val), []).sort((a: { id: number }, b: { id: number }) => a.id > b.id ? 1 : -1),
+        session_id: sessionID
+      }
+    })
   }
+
+  private connectDB(): Promise<IDBPDatabase> {
+    return openDB('fp-guardian-results', 1)
+  };
 
   private messageListener (e: MessageEvent) {
     try {
