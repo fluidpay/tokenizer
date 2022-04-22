@@ -215,31 +215,18 @@ export default class Tokenizer {
   }
 
 
-  private async getGuardianData (): Promise<{
+  private getGuardianData (): Promise<{
     events: Record<string, unknown>[],
     session_id: string
   }> {
-    const DATA_STORE = 'guardian'
-    return this.connectDB().then(async (db) => {
-      const joinedEvents: any[] = []
-      joinedEvents.push(await db.get(DATA_STORE, 'utm_source') || [])
-      joinedEvents.push(await db.get(DATA_STORE, 'utm_medium') || [])
-      joinedEvents.push(await db.get(DATA_STORE, 'utm_campaign') || [])
-      joinedEvents.push(await db.get(DATA_STORE, 'utm_term') || [])
-      joinedEvents.push(await db.get(DATA_STORE, 'utm_content') || [])
-
-      const sessionID = await db.get(DATA_STORE, 'session_id') || ''
-      return {
-        events: joinedEvents
-        .reduce((acc, val) => acc.concat(val), []).sort((a: { id: number }, b: { id: number }) => a.id > b.id ? 1 : -1),
-        session_id: sessionID
-      }
-    })
+    const g = (window as {Guardian?: unknown}).Guardian as {getData?: () => Promise<{events: Record<string, unknown>[]; session_id: string;}>}
+    if (g &&
+        g?.getData &&
+        typeof g.getData === 'function') {
+      return g.getData() as Promise<{events: Record<string, unknown>[]; session_id: string;}>
+    }
+    return Promise.reject()
   }
-
-  private connectDB(): Promise<IDBPDatabase> {
-    return openDB('fp-guardian-results', 1)
-  };
 
   private messageListener (e: MessageEvent) {
     try {
