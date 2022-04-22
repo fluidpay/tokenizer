@@ -1,5 +1,3 @@
-import {IDBPDatabase, openDB} from 'idb'
-
 export interface Settings {
   [key: string]: any
 }
