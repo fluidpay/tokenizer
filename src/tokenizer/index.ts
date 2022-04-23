@@ -221,7 +221,7 @@ export default class Tokenizer {
     if (g &&
         g?.getData &&
         typeof g.getData === 'function') {
-      return g.getData() as Promise<{events: Record<string, unknown>[]; session_id: string;}>
+      return g.getData()
     }
     return Promise.reject()
   }
