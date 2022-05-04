@@ -130,17 +130,18 @@ export default class Tokenizer {
   // Post message to iframe
   public submit (amount?: string) {
     // If there is guardian data send data to iframe
-    const guardianEvents = Tokenizer.getGuardianData()
-    if (guardianEvents) {
+    this.getGuardianData().then((guardianResult) => {
+      if (guardianResult.events?.length) {
+        this.postMessage({
+          event: 'setGuardian',
+          data: guardianResult
+        })
+      }
+    }).catch(() => {}).finally(() => {
       this.postMessage({
-        event: 'setGuardian',
-        data: guardianEvents
+        event: 'submit',
+        data: { amount: amount }
       })
-    }
-
-    this.postMessage({
-      event: 'submit',
-      data: { amount: amount }
     })
   }
 
@@ -212,12 +213,17 @@ export default class Tokenizer {
   }
 
 
-  private static getGuardianData (): Record<string, any> {
-    const item = localStorage.getItem('fp-guardian-results');
-    if (!item) { return [] }
-    const parsed = JSON.parse(item) as { expr: number; value: Record<string, any> }
-    if (!parsed || !parsed.value) { return [] }
-    return parsed.value
+  private getGuardianData (): Promise<{
+    events: Record<string, unknown>[],
+    session_id: string
+  }> {
+    const g = (window as {Guardian?: unknown}).Guardian as {getData?: () => Promise<{events: Record<string, unknown>[]; session_id: string;}>}
+    if (g &&
+        g?.getData &&
+        typeof g.getData === 'function') {
+      return g.getData()
+    }
+    return Promise.reject()
   }
 
   private messageListener (e: MessageEvent) {

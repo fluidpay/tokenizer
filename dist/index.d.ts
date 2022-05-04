@@ -50,6 +50,6 @@ export default class Tokenizer {
     private buildIframe;
     private setSettings;
     private updateHeight;
-    private static getGuardianData;
+    private getGuardianData;
     private messageListener;
 }
