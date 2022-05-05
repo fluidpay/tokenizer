@@ -15,7 +15,7 @@ export default defineComponent({
   mounted () {
     this.example = new Tokenizer({
       apikey: testapikey,
-      container: this.$refs.example as HTMLDivElement,
+      container: '#latediv',
       // settings: {
       //   payment: {
       //     calculateFees: false
@@ -28,6 +28,13 @@ export default defineComponent({
         this.validCard = card
       }
     })
+
+    var main = this.$refs.example as HTMLDivElement
+    var newChild = document.createElement('div')
+    newChild.id = 'latediv'
+    setTimeout(() => {
+      main.appendChild(newChild)
+    }, 100)
   }
 })
 </script>
