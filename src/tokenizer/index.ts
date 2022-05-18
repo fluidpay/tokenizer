@@ -118,20 +118,25 @@ export default class Tokenizer {
 
   // Post message to iframe
   public submit (amount?: string) {
-    this.postMessage({
-      event: 'submit',
-      data: { amount: amount }
-    })
     // If there is guardian data send data to iframe
-    // this.getGuardianData().then((guardianResult) => {
-    //   if (guardianResult.events?.length) {
-    //     this.postMessage({
-    //       event: 'setGuardian',
-    //       data: guardianResult
-    //     })
-    //   }
-    // }).catch(() => {}).finally(() => {
-    // })
+    this.getGuardianData().then((guardianResult) => {
+      if (guardianResult.events?.length) {
+        this.postMessage({
+          event: 'setGuardian',
+          data: guardianResult
+        })
+      }
+    }).then(() => {
+      this.postMessage({
+        event: 'submit',
+        data: { amount: amount }
+      })
+    }).catch(() => {
+      this.postMessage({
+        event: 'submit',
+        data: { amount: amount }
+      })
+    })
   }
 
   // Pass exp date to be set inside form
