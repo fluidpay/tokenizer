@@ -18,6 +18,7 @@ module.exports = {
     'no-new': 'off',
 
     // Vue
+    'vue/multi-word-component-names': 'off',
     'vue/order-in-components': ['error', {
       order: [
         'name',
@@ -31,14 +32,8 @@ module.exports = {
     }],
 
     'vue/max-attributes-per-line': ['error', {
-      singleline: {
-        max: 5,
-        allowFirstLine: true
-      },
-      multiline: {
-        max: 1,
-        allowFirstLine: false
-      }
+      singleline: 5,
+      multiline: 1
     }],
 
     'vue/component-tags-order': ['error', {
