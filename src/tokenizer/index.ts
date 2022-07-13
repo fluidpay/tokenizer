@@ -6,7 +6,7 @@ export interface Constructor {
   url?: string
   apikey: string
   amount?: string
-  container: HTMLDivElement | null
+  container: Element | string | null
 
   // Callbacks
   onLoad?: () => void
@@ -17,6 +17,11 @@ export interface Constructor {
   submission: (response: any) => void
 
   settings?: {[key: string]: any}
+}
+
+export interface GuardianData {
+  events: Record<string, unknown>[]
+  session_id: string
 }
 
 export interface Message {
@@ -37,12 +42,10 @@ export default class Tokenizer {
   public amount: string | undefined
 
   public iframe: HTMLIFrameElement
-  public container: HTMLDivElement
+  public container: Element | null = null
   public settings: Settings = { id: '', apikey: '', amount: '' }
 
   constructor (info: Constructor) {
-    this.validate(info)
-
     // Make sure apikey is set
     if (!info.apikey) { throw new Error('apikey must be set!') }
     this.apikey = info.apikey
@@ -63,20 +66,6 @@ export default class Tokenizer {
       this.amount = info.amount
     }
 
-    // Check to see if container is null
-    if (info.container === null) {
-      throw new Error('Container cannot be null')
-    }
-
-    // Set container
-    let el: HTMLDivElement
-    if (typeof info.container === 'string') {
-      el = document.querySelector(info.container) as any as HTMLDivElement
-    } else {
-      el = info.container
-    }
-    this.container = el
-
     // Set values
     this.id = this.uuid()
     if (typeof info.settings === 'object') { this.settings = info.settings }
@@ -92,32 +81,32 @@ export default class Tokenizer {
     window.addEventListener('message', (e: any) => { this.messageListener(e) })
 
     this.iframe = this.buildIframe()
-    this.iframe.onload = () => {
-      // Send settings to iframe
-      this.settings.id = this.id
-      this.settings.apikey = this.apikey
-      this.settings.amount = this.amount
-      this.setSettings(this.settings)
-      this.onLoad() // Call on load
-    }
+    this.waitForContainer(info.container, (el: Element | null) => {
+      // Check if element is in the DOM
+      if (!el) {
+        throw new Error('Could not find container')
+        return
+      }
 
-    // Add iframe
-    this.container.appendChild(this.iframe)
+      // Add onload to iframe
+      this.iframe.onload = () => {
+        // Send settings to iframe
+        this.settings.id = this.id
+        this.settings.apikey = this.apikey
+        this.settings.amount = this.amount
+        this.setSettings(this.settings)
+        this.onLoad() // Call on load
+      }
+
+      // Add iframe
+      this.container = el
+      this.container.appendChild(this.iframe)
+    })
   }
 
   // Only here because it used originally here from the begining
   // DO NOT REMOVE, some clients still call create even though it doesnt do anything anymore.
   public create () { }
-
-  public validate (info: Constructor) {
-    let el: HTMLDivElement | null
-    if (typeof info.container === 'string') {
-      el = document.querySelector(info.container) as any as HTMLDivElement
-    } else {
-      el = info.container
-    }
-    if (!el) { throw new Error('Could not find container') }
-  }
 
   public isSurchargeable (state: string, bin: {card_type: string}): boolean {
     const blacklist = ['CO', 'CT', 'ME', 'MA']
@@ -129,20 +118,25 @@ export default class Tokenizer {
 
   // Post message to iframe
   public submit (amount?: string) {
-    this.postMessage({
-      event: 'submit',
-      data: { amount: amount }
-    })
     // If there is guardian data send data to iframe
-    // this.getGuardianData().then((guardianResult) => {
-    //   if (guardianResult.events?.length) {
-    //     this.postMessage({
-    //       event: 'setGuardian',
-    //       data: guardianResult
-    //     })
-    //   }
-    // }).catch(() => {}).finally(() => {
-    // })
+    this.getGuardianData().then((guardianResult) => {
+      if (guardianResult.events?.length) {
+        this.postMessage({
+          event: 'setGuardian',
+          data: guardianResult
+        })
+      }
+    }).then(() => {
+      this.postMessage({
+        event: 'submit',
+        data: { amount: amount }
+      })
+    }).catch(() => {
+      this.postMessage({
+        event: 'submit',
+        data: { amount: amount }
+      })
+    })
   }
 
   // Pass exp date to be set inside form
@@ -172,6 +166,35 @@ export default class Tokenizer {
   private uuid (): string {
     function s4 () { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1) }
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
+  }
+
+  private waitForContainer(selector: Element | string | null, callback: (el: Element | null) => void) {
+    if (!selector) {
+      callback(null)
+      return
+    }
+
+    const startTimeInMs = Date.now();
+    const checkFrequencyInMs = 1000;
+    const timeoutInMs = 10000;
+
+    (function loopSearch() {
+      if (typeof selector === 'string' && document.querySelector(selector) !== null) {
+        callback(document.querySelector(selector))
+        return
+      } else if (typeof selector !== 'string' && selector) {
+        callback(selector)
+        return
+      } else {
+        setTimeout(() => {
+          if (timeoutInMs && Date.now() - startTimeInMs > timeoutInMs) {
+            callback(null)
+            return
+          }
+          loopSearch()
+        }, checkFrequencyInMs)
+      }
+    })()
   }
 
   private buildIframe (): HTMLIFrameElement {
@@ -212,15 +235,9 @@ export default class Tokenizer {
     }
   }
 
-
-  private getGuardianData (): Promise<{
-    events: Record<string, unknown>[],
-    session_id: string
-  }> {
-    const g = (window as {Guardian?: unknown}).Guardian as {getData?: () => Promise<{events: Record<string, unknown>[]; session_id: string;}>}
-    if (g &&
-        g?.getData &&
-        typeof g.getData === 'function') {
+  private getGuardianData (): Promise<GuardianData> {
+    const g = (window as {Guardian?: unknown}).Guardian as {getData?: () => Promise<GuardianData>}
+    if (g && g.getData && typeof g.getData === 'function') {
       return g.getData()
     }
     return Promise.reject()

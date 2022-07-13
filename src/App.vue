@@ -1,11 +1,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Header from '@/docs/header.vue'
+import HeaderDoc from '@/docs/header.vue'
 
 export default defineComponent({
   name: 'App',
   components: {
-    Header
+    HeaderDoc
   }
 })
 </script>
@@ -56,7 +56,7 @@ export default defineComponent({
     <div class="greenbar" />
     <div class="orangebar" />
     <div class="app">
-      <Header />
+      <HeaderDoc />
       <router-view v-slot="{ Component }">
         <transition mode="out-in" name="slide-left">
           <component :is="Component" />

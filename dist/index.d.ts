@@ -5,7 +5,7 @@ export interface Constructor {
     url?: string;
     apikey: string;
     amount?: string;
-    container: HTMLDivElement | null;
+    container: Element | string | null;
     onLoad?: () => void;
     onPaymentChange?: (type: string) => void;
     validCard?: (valid: boolean) => void;
@@ -15,6 +15,10 @@ export interface Constructor {
     settings?: {
         [key: string]: any;
     };
+}
+export interface GuardianData {
+    events: Record<string, unknown>[];
+    session_id: string;
 }
 export interface Message {
     id?: string;
@@ -29,11 +33,10 @@ export default class Tokenizer {
     url: string;
     amount: string | undefined;
     iframe: HTMLIFrameElement;
-    container: HTMLDivElement;
+    container: Element | null;
     settings: Settings;
     constructor(info: Constructor);
     create(): void;
-    validate(info: Constructor): void;
     isSurchargeable(state: string, bin: {
         card_type: string;
     }): boolean;
@@ -47,6 +50,7 @@ export default class Tokenizer {
     onPaymentChange: (type: string) => void;
     submission: (response: any) => void;
     private uuid;
+    private waitForContainer;
     private buildIframe;
     private setSettings;
     private updateHeight;
