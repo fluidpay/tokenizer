@@ -64,9 +64,6 @@ export default defineComponent({})
         <router-link to="/payments">
           Payments
         </router-link>
-        <router-link to="/stripe">
-          Stripe
-        </router-link>
         <router-link to="/calculatefees">
           Calculate Fees
         </router-link>

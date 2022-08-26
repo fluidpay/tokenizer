@@ -24,7 +24,7 @@ export default defineComponent({
       settings: {
         payment: {
           showTitle: true,
-          types: ['card', 'ach', 'plaid', 'stripe'],
+          types: ['card', 'ach', 'plaid'],
           ach: {
             // sec_code: 'yep',
             // secCodeList: ['hello', 'yep'],
@@ -72,7 +72,7 @@ export default defineComponent({
           settings: {
             processorId: '', // optional
             payment: {
-              types: ['card', 'ach', 'plaid', 'stripe'], // Default ['card']
+              types: ['card', 'ach', 'plaid'], // Default ['card']
               ach: {
                 sec_code: 'web', // Default web - web, ccd, ppd, tel
                 secCodeList: ['web', 'ppd', 'ccd', 'tel'],
