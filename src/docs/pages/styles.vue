@@ -58,7 +58,12 @@ export default defineComponent({
           '.payment .cvv input': {
             border: 'solid 1px #ffffff',
             'padding-left': '6px'
-          }
+          },
+          "@media (max-width: 768px)": {
+            "#tokenizer-form": {
+              background: "blue",
+            },
+          },
         }
       }
     })
