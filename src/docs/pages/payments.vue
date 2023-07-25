@@ -22,6 +22,12 @@ export default defineComponent({
         this.exampleResponse = resp
       },
       settings: {
+        user: {
+          showName: true,
+          showEmail: true,
+          showPhone: true,
+          showInline: true,
+        },
         billing: {
           show: true
         },
@@ -32,6 +38,14 @@ export default defineComponent({
             // sec_code: 'yep',
             // secCodeList: ['hello', 'yep'],
             showSecCode: true,
+
+            // If payment is ach, set speficic user fields to required
+            user_required: {
+              first_name: true,
+              last_name: true,
+              email: true,
+              phone: true,
+            },
 
             // If payment is ach set specific billing fields to required
             billing_required: {
@@ -45,6 +59,14 @@ export default defineComponent({
           card: {
             strict_mode: false, // Set to true to allow for 19 digit cards
             requireCVV: true,
+
+            // If payment is ach, set speficic user fields to required
+            user_required: {
+              first_name: false,
+              last_name: false,
+              email: false,
+              phone: false,
+            },
 
             // If payment is card set specific billing fields to required
             billing_required: {
