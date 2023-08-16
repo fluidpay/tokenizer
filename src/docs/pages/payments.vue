@@ -22,15 +22,6 @@ export default defineComponent({
         this.exampleResponse = resp
       },
       settings: {
-        user: {
-          showName: true,
-          showEmail: true,
-          showPhone: true,
-          showInline: true,
-        },
-        billing: {
-          show: true
-        },
         payment: {
           showTitle: true,
           types: ['card', 'ach', 'plaid', 'stripe'],
@@ -38,44 +29,45 @@ export default defineComponent({
             // sec_code: 'yep',
             // secCodeList: ['hello', 'yep'],
             showSecCode: true,
+            verifyAccountRouting: true,
 
             // If payment is ach, set speficic user fields to required
-            user_required: {
-              first_name: true,
-              last_name: true,
-              email: true,
-              phone: true,
-            },
+            // user_required: {
+            //   first_name: true,
+            //   last_name: true,
+            //   email: true,
+            //   phone: true,
+            // },
 
             // If payment is ach set specific billing fields to required
-            billing_required: {
-              address: false,
-              city: false,
-              state: false,
-              zip: false,
-              country: false,
-            }
+            // billing_required: {
+            //   address: false,
+            //   city: false,
+            //   state: false,
+            //   zip: false,
+            //   country: false,
+            // }
           },
           card: {
             strict_mode: false, // Set to true to allow for 19 digit cards
             requireCVV: true,
 
             // If payment is ach, set speficic user fields to required
-            user_required: {
-              first_name: false,
-              last_name: false,
-              email: false,
-              phone: false,
-            },
+            // user_required: {
+            //   first_name: false,
+            //   last_name: false,
+            //   email: false,
+            //   phone: false,
+            // },
 
             // If payment is card set specific billing fields to required
-            billing_required: {
-              address: true,
-              city: true,
-              state: true,
-              zip: true,
-              country: true,
-            }
+            // billing_required: {
+            //   address: true,
+            //   city: true,
+            //   state: true,
+            //   zip: true,
+            //   country: true,
+            // }
           },
         }
       }
