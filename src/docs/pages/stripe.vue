@@ -30,14 +30,14 @@ export default defineComponent({
         }
       },
       submission: (resp: any) => {
-        const btn = document.getElementById('submit') as HTMLButtonElement
+        // const btn = document.getElementById('submit') as HTMLButtonElement
         this.response = resp
       }
     })
   },
   methods: {
     submit () {
-      const btn = document.getElementById('submit') as HTMLButtonElement
+      // const btn = document.getElementById('submit') as HTMLButtonElement
       this.example.submit()
     }
   }

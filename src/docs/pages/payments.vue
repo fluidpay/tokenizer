@@ -16,7 +16,7 @@ export default defineComponent({
       apikey: testapikey,
       container: this.$refs.example as HTMLDivElement,
       onPaymentChange: (type: string) => {
-        // console.log(type)
+        console.log(type)
       },
       submission: (resp: any) => {
         this.exampleResponse = resp
