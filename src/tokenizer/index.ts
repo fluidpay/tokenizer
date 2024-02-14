@@ -108,6 +108,7 @@ export default class Tokenizer {
   // DO NOT REMOVE, some clients still call create even though it doesnt do anything anymore.
   public create () { }
 
+  // Check if state is surchargeable, pretty primative but works for now
   public isSurchargeable (state: string, bin: {card_type: string}): boolean {
     const blacklist = ['CO', 'CT', 'ME', 'MA']
     if (state === '') { return false }
@@ -147,6 +148,13 @@ export default class Tokenizer {
     })
   }
 
+  public setError(input: string) {
+    this.postMessage({
+      event: 'setError',
+      data: { input: input }
+    })
+  }
+
   // Communicate back to child
   public postMessage (msg: Message): void {
     const w = this.iframe.contentWindow
@@ -162,6 +170,7 @@ export default class Tokenizer {
   public magStripeSwipe: (data: any) => void = () => {}
   public onPaymentChange: (type: string) => void = () => {}
   public submission: (response: any) => void = () => {}
+  public errorPass: (response: string) => void = () => {}
 
   private uuid (): string {
     function s4 () { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1) }

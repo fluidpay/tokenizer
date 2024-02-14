@@ -13,6 +13,7 @@ export default defineComponent({
       achOnChange: (null as any),
       magStripeSwipe: (null as any),
       submission: (null as any),
+      errorpass: (null as any),
     }
   },
   mounted () {
@@ -55,6 +56,13 @@ export default defineComponent({
     submit () {
       if (this.example) {
         this.example.submit()
+      }
+    },
+
+    setErrorOnCvv() {
+      // Set error on cvv field
+      if (this.example) {
+        this.example.setError('cvv')
       }
     }
   }
@@ -139,6 +147,10 @@ export default defineComponent({
         // Set expiration date on card payment
         example.setExpDate('09/12')
 
+        // Set error on specific field
+        // Same name that would show up on validation error
+        example.setError('cvv')
+
         // Submit payment
         example.submit()
       </code>
@@ -148,6 +160,10 @@ export default defineComponent({
       <div class="example-method" />
       <button @click="submit()">
         Pay
+      </button>
+
+      <button @click="setErrorOnCvv()">
+        Set Error On CVV
       </button>
 
       <div class="callback-title">
