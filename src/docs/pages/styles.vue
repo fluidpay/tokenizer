@@ -33,6 +33,46 @@ export default defineComponent({
             border: 'none'
           }
         }
+
+        // Oleg - mywell styles - Oct 31, 2023
+        // styles: {
+        //   "#app": {
+        //     padding: "5px 15px",
+        //   },
+        //   select: {
+        //     padding: "6px 4px",
+        //   },
+        //   ".fieldsetrow": {
+        //     padding: "0 0 10px",
+        //   },
+        //   ".card > .fieldset": {
+        //     padding: "0 !important",
+        //     margin: "0 2.5px 5px !important",
+        //   },
+        //   ".ach .fieldsetrow": {
+        //     "flex-wrap": "wrap-reverse",
+        //     "flex-direction": "row-reverse",
+        //     "justify-content": "center",
+        //     width: "auto",
+        //   },
+        //   ".fieldsetgroup": {
+        //     flex: "1",
+        //   },
+        //   ".ach .account": {
+        //     padding: "0 5px 0 5px !important",
+        //   },
+        //   ".ach .fieldsetrow .type": {
+        //     flex: "none !important",
+        //   },
+        //   "@media(max-width: 531px)": {
+        //     ".ach .fieldsetrow .account": {
+        //       padding: " 0!important",
+        //       flex: "1 1 auto",
+        //     },
+        //   },
+        // },
+
+        
       }
     })
 
@@ -58,7 +98,12 @@ export default defineComponent({
           '.payment .cvv input': {
             border: 'solid 1px #ffffff',
             'padding-left': '6px'
-          }
+          },
+          "@media (max-width: 768px)": {
+            "#tokenizer-form": {
+              background: "blue",
+            },
+          },
         }
       }
     })

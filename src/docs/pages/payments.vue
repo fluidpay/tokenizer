@@ -15,9 +15,9 @@ export default defineComponent({
     this.example = new Tokenizer({
       apikey: testapikey,
       container: this.$refs.example as HTMLDivElement,
-      onPaymentChange: (type: string) => {
-        // console.log(type)
-      },
+      // onPaymentChange: (type: string) => {
+      //   console.log(type)
+      // },
       submission: (resp: any) => {
         this.exampleResponse = resp
       },
@@ -28,11 +28,46 @@ export default defineComponent({
           ach: {
             // sec_code: 'yep',
             // secCodeList: ['hello', 'yep'],
-            showSecCode: true
+            showSecCode: true,
+            verifyAccountRouting: true,
+
+            // If payment is ach, set speficic user fields to required
+            // user_required: {
+            //   first_name: true,
+            //   last_name: true,
+            //   email: true,
+            //   phone: true,
+            // },
+
+            // If payment is ach set specific billing fields to required
+            // billing_required: {
+            //   address: false,
+            //   city: false,
+            //   state: false,
+            //   zip: false,
+            //   country: false,
+            // }
           },
           card: {
             strict_mode: false, // Set to true to allow for 19 digit cards
-            requireCVV: true
+            requireCVV: true,
+
+            // If payment is ach, set speficic user fields to required
+            // user_required: {
+            //   first_name: false,
+            //   last_name: false,
+            //   email: false,
+            //   phone: false,
+            // },
+
+            // If payment is card set specific billing fields to required
+            // billing_required: {
+            //   address: true,
+            //   city: true,
+            //   state: true,
+            //   zip: true,
+            //   country: true,
+            // }
           },
         }
       }
@@ -76,11 +111,29 @@ export default defineComponent({
               ach: {
                 sec_code: 'web', // Default web - web, ccd, ppd, tel
                 secCodeList: ['web', 'ppd', 'ccd', 'tel'],
-                showSecCode: false // Whether or not to show sec code field
+                showSecCode: false, // Whether or not to show sec code field
+
+                // If payment is ach set specific billing fields to required
+                billing_required: {
+                  address: true,
+                  city: true,
+                  state: true,
+                  zip: true,
+                  country: true,
+                }
               },
               card: {
                 strict_mode: false, // Set to true to allow for 19 digit cards
-                requireCVV: false
+                requireCVV: false,
+
+                // If payment is card set specific billing fields to required
+                billing_required: {
+                  address: true,
+                  city: true,
+                  state: true,
+                  zip: true,
+                  country: true,
+                }
               }
             }
           }

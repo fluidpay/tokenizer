@@ -21,6 +21,13 @@ export default defineComponent({
       //     calculateFees: false
       //   }
       // },
+      settings: {
+        paay: {
+          sandbox: false,
+          // forceDisabled: true,
+          // rejectChallenges: []
+        }
+      },
       submission: (resp: any) => {
         this.exampleResponse = resp
       },
@@ -91,7 +98,7 @@ export default defineComponent({
 
     <div class="section example">
       <div ref="example" />
-      <button @click="example.submit()">
+      <button @click="example.submit('1.00')">
         Pay
       </button>
       <pre>{{ exampleResponse }}</pre>

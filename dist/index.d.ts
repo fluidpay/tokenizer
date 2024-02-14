@@ -42,6 +42,7 @@ export default class Tokenizer {
     }): boolean;
     submit(amount?: string): void;
     setExpDate(expDate: string): void;
+    setError(input: string): void;
     postMessage(msg: Message): void;
     onLoad: () => void;
     validCard: (card: any) => void;
@@ -49,6 +50,7 @@ export default class Tokenizer {
     magStripeSwipe: (data: any) => void;
     onPaymentChange: (type: string) => void;
     submission: (response: any) => void;
+    errorPass: (response: string) => void;
     private uuid;
     private waitForContainer;
     private buildIframe;
