@@ -35,6 +35,10 @@ export default createRouter({
     {
       path: '/threeds',
       component: () => import('@/docs/pages/threeds.vue')
+    },
+    {
+      path: '/apple-pay',
+      component: () => import('@/docs/pages/apple-pay.vue')
     }
   ]
 })

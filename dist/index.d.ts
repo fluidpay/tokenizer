@@ -1,6 +1,4 @@
-export interface Settings {
-    [key: string]: any;
-}
+import { Settings } from "./types";
 export interface Constructor {
     url?: string;
     apikey: string;
@@ -12,9 +10,7 @@ export interface Constructor {
     achOnChange?: (data: any) => void;
     magStripeSwipe?: (data: any) => void;
     submission: (response: any) => void;
-    settings?: {
-        [key: string]: any;
-    };
+    settings?: Settings;
 }
 export interface GuardianData {
     events: Record<string, unknown>[];
@@ -35,8 +31,15 @@ export default class Tokenizer {
     iframe: HTMLIFrameElement;
     container: Element | null;
     settings: Settings;
+    private applePay;
     constructor(info: Constructor);
     create(): void;
+    private getApiKeyURL;
+    private getTokenizerURL;
+    private initApplePay;
+    private populateApplePayBtn;
+    private clickApplePay;
+    private hideAutoPayButtons;
     isSurchargeable(state: string, bin: {
         card_type: string;
     }): boolean;

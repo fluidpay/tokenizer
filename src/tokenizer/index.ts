@@ -1,6 +1,4 @@
-export interface Settings {
-  [key: string]: any
-}
+import { AutoPayResult, Settings } from "./types";
 
 export interface Constructor {
   url?: string
@@ -16,7 +14,7 @@ export interface Constructor {
   magStripeSwipe?: (data: any) => void
   submission: (response: any) => void
 
-  settings?: {[key: string]: any}
+  settings?: Settings
 }
 
 export interface GuardianData {
@@ -45,6 +43,10 @@ export default class Tokenizer {
   public container: Element | null = null
   public settings: Settings = { id: '', apikey: '', amount: '' }
 
+  private applePay = {
+    btn: null as HTMLElement | null,
+  }
+
   constructor (info: Constructor) {
     // Make sure apikey is set
     if (!info.apikey) { throw new Error('apikey must be set!') }
@@ -52,14 +54,6 @@ export default class Tokenizer {
 
     // Set url
     this.url = (info.url && info.url !== '' ? info.url : url) // Use constructor url passed, or default url var
-    if (!info.url && window.location.href.indexOf('localhost') !== -1) {
-      this.url = localDevUrl.replace(/\/$/, '') + pathUrl
-    } else {
-      this.url = this.url.replace(/\/$/, '') + pathUrl
-    }
-
-    // Add apikey to url
-    this.url += '/' + this.apikey
 
     // set amount
     if (info.amount) {
@@ -68,7 +62,9 @@ export default class Tokenizer {
 
     // Set values
     this.id = this.uuid()
-    if (typeof info.settings === 'object') { this.settings = info.settings }
+    if (typeof info.settings === 'object') {
+      this.settings = info.settings
+    }
 
     // Set callbacks
     if (info.onLoad) { this.onLoad = info.onLoad }
@@ -97,16 +93,152 @@ export default class Tokenizer {
         this.setSettings(this.settings)
         this.onLoad() // Call on load
       }
-
       // Add iframe
       this.container = el
       this.container.appendChild(this.iframe)
+      this.initApplePay(el)
     })
   }
 
   // Only here because it used originally here from the begining
   // DO NOT REMOVE, some clients still call create even though it doesnt do anything anymore.
   public create () { }
+
+  private getApiKeyURL(): string {
+    return this.getTokenizerURL() + '/' + this.apikey
+  }
+
+  private getTokenizerURL(): string {
+    const urlPrefix = this.url
+    if (!urlPrefix && window.location.href.includes('localhost')) {
+      return localDevUrl.replace(/\/$/, '') + pathUrl
+    } else {
+      return urlPrefix.replace(/\/$/, '') + pathUrl
+    }
+  }
+
+  private initApplePay(container: Element) : void {
+    if (!this.settings?.payment?.types?.includes('apple_pay') && !this.settings?.payment?.applePay) {
+      return
+    }
+
+    document.head.insertAdjacentHTML('beforeend', `
+    <style>
+      apple-pay-button {
+          --apple-pay-button-width: 100%;
+          --apple-pay-button-height: 20px;
+          border-radius: 4px;
+          border: solid 1px #DCDEE2;
+      }
+    </style>
+    `)
+
+    const applePayScript = document.createElement('script')
+    const applePaySDKUrl = 'https://applepay.cdn-apple.com/jsapi/v1.1.0/apple-pay-sdk.js'
+    applePayScript.setAttribute('src', applePaySDKUrl)
+    applePayScript.setAttribute('async', '')
+    applePayScript.setAttribute('crossorigin', '')
+    document.head.appendChild(applePayScript)
+    this.populateApplePayBtn(container)
+  }
+
+  private populateApplePayBtn(container: Element) {
+    this.applePay.btn = document.createElement('apple-pay-button');
+    this.applePay.btn.setAttribute('buttonstyle', 'white')
+    this.applePay.btn.setAttribute('type', 'pay')
+    this.applePay.btn.setAttribute('locale', 'en-US')
+    this.applePay.btn.onclick = this.clickApplePay
+    container.appendChild(this.applePay.btn)
+  }
+
+  private clickApplePay = () => {
+    if (!ApplePaySession) {
+      console.warn('Apple Pay is not available')
+      return;
+    }
+    const applePayConfig = this.settings?.payment?.applePay
+    if (!applePayConfig) {
+      console.error('Apple Pay is missing from configuration')
+      return;
+    }
+
+    // Create ApplePaySession
+    const defaultSupportedNetworks = [
+      'amex', 'chinaUnionPay', 'discover', 'interac', 'masterCard', 'privateLabel', 'visa', // v1
+      'jcb', // v2
+      'cartesBancaires', 'eftpos', 'electron', 'elo', 'maestro', 'vPay', // v4
+      'mada' // v5
+    ];
+    const session = new ApplePaySession(applePayConfig.version || 5, {
+      countryCode: applePayConfig.payment.countryCode,
+      currencyCode: applePayConfig.payment.currencyCode,
+      total: applePayConfig.payment.total,
+      // optional params with default values
+      merchantCapabilities: applePayConfig.payment.merchantCapabilities || ['supports3DS'],
+      supportedNetworks: applePayConfig.payment.supportedNetworks || defaultSupportedNetworks,
+      // optional params
+      supportedCountries: applePayConfig.payment.supportedCountries,
+      lineItems: applePayConfig.payment.lineItems,
+      requiredBillingContactFields: applePayConfig.payment.requiredBillingContactFields,
+      requiredShippingContactFields: applePayConfig.payment.requiredShippingContactFields,
+    });
+
+    session.onvalidatemerchant = async (event) => {
+      fetch(`${this.url}/api/public/applepay/validatemerchant`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          PKeyCompany: applePayConfig.key,
+          AppleMerchantId: applePayConfig.appleMerchantID,
+          ValidationUrl: event.validationURL,
+          domainName: applePayConfig.domainName
+        })
+      })
+        .then(data => data.json())
+        .then(data => session.completeMerchantValidation(data))
+        .catch(() => {
+          console.error('merchant validation failed')
+          session.completeMerchantValidation({error: 'merchant validation failed'})
+        })
+    };
+
+    session.onpaymentauthorized = (event) => {
+      // Define ApplePayPaymentAuthorizationResult
+      applePayConfig.autoPay(event).then((msg: AutoPayResult) => {
+        this.submission({
+          status: msg,
+        })
+        if (msg === 'success') {
+          session.completePayment(ApplePaySession.STATUS_SUCCESS);
+        } else {
+          session.completePayment(ApplePaySession.STATUS_FAILURE);
+        }
+      }).catch(() => {
+        session.completePayment(ApplePaySession.STATUS_FAILURE);
+      })
+    };
+
+    session.begin();
+  }
+
+  // hideAutoPayButtons is hiding ApplePay and Google Pay's "Pay" buttons
+  private hideAutoPayButtons(type: string) {
+    if (type !== '' && type !== 'apple_pay') {
+      this.applePay.btn?.remove()
+      this.applePay.btn = null
+    } else {
+      this.waitForContainer(this.container, (el: Element | null) => {
+        if (!el) {
+          return
+        }
+        if (!this.applePay.btn) {
+          this.populateApplePayBtn(el)
+        }
+      })
+    }
+  }
 
   // Check if state is surchargeable, pretty primative but works for now
   public isSurchargeable (state: string, bin: {card_type: string}): boolean {
@@ -208,7 +340,7 @@ export default class Tokenizer {
 
   private buildIframe (): HTMLIFrameElement {
     const iframe = document.createElement('iframe')
-    iframe.src = this.url
+    iframe.src = this.getApiKeyURL()
 
     // Set allow payment request
     iframe.setAttribute('allow', 'payment')
@@ -276,6 +408,7 @@ export default class Tokenizer {
           break
         case 'onPaymentChange':
           this.onPaymentChange(data.type)
+          this.hideAutoPayButtons(data.type)
           break
         case 'setHeight':
           this.updateHeight(data.height)
