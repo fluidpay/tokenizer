@@ -220,7 +220,11 @@ export default class Tokenizer {
       })
     };
 
-    session.begin();
+    try {
+      session.begin();
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   // hideAutoPayButtons is hiding ApplePay and Google Pay's "Pay" buttons

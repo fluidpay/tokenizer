@@ -9,7 +9,8 @@ export default defineComponent({
   data () {
     return {
       example: (null as any),
-      exampleResponse: '',
+      autoPayResponse: '',
+      submitResponse: '',
       applePayOpts: {
         autoPayResult: 'success' as AutoPayResult
       }
@@ -21,15 +22,16 @@ export default defineComponent({
       url: '',
       container: this.$refs.example as HTMLDivElement,
       submission: (resp: any) => {
-        this.exampleResponse = resp
+        this.submitResponse = resp
       },
       settings: {
         payment: {
           showTitle: true,
           types: ['apple_pay'],
           applePay: {
-            key: '',
-            autoPay: async (): Promise<AutoPayResult> => {
+            key: 'cppdkrpuevgm8uqsmjng',
+            autoPay: async (e): Promise<AutoPayResult> => {
+              this.autoPayResponse = JSON.stringify(e.payment, null, 2)
               return this.applePayOpts.autoPayResult || 'success'
             },
             payment: {
@@ -66,6 +68,17 @@ export default defineComponent({
       .fieldset {
         & > label {
           margin-right: 20px;
+        }
+      }
+
+      .example {
+        display: flex;
+        flex-flow: column;
+        margin: 20px 0 20px 0;
+
+        & > label {
+          font-weight: bold;
+          margin: 20px 0 20px 0;
         }
       }
     }
@@ -156,7 +169,14 @@ export default defineComponent({
     </div>
     <div class="section apple-pay-example">
       <div ref="example" />
-      <pre>{{ exampleResponse }}</pre>
+      <div v-if="submitResponse" class="example">
+        <label class="title">Submit Result</label>
+        <pre>{{ submitResponse }}</pre>
+      </div>
+      <div v-if="autoPayResponse" class="example">
+        <label class="title">AutoPay event value</label>
+        <pre>{{ autoPayResponse }}</pre>
+      </div>
     </div>
   </div>
 </template>
