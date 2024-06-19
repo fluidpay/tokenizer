@@ -29,7 +29,7 @@ export default defineComponent({
           showTitle: true,
           types: ['apple_pay'],
           applePay: {
-            key: 'cppdkrpuevgm8uqsmjng',
+            key: '',
             autoPay: async (e): Promise<AutoPayResult> => {
               this.autoPayResponse = JSON.stringify(e.payment, null, 2)
               return this.applePayOpts.autoPayResult || 'success'
