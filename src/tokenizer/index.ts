@@ -122,17 +122,6 @@ export default class Tokenizer {
       return
     }
 
-    document.head.insertAdjacentHTML('beforeend', `
-    <style>
-      apple-pay-button {
-          --apple-pay-button-width: 100%;
-          --apple-pay-button-height: 20px;
-          border-radius: 4px;
-          border: solid 1px #DCDEE2;
-      }
-    </style>
-    `)
-
     const applePayScript = document.createElement('script')
     const applePaySDKUrl = 'https://applepay.cdn-apple.com/jsapi/v1.1.0/apple-pay-sdk.js'
     applePayScript.setAttribute('src', applePaySDKUrl)
@@ -147,6 +136,10 @@ export default class Tokenizer {
     this.applePay.btn.setAttribute('buttonstyle', 'white')
     this.applePay.btn.setAttribute('type', 'pay')
     this.applePay.btn.setAttribute('locale', 'en-US')
+    this.applePay.btn.style.setProperty('--apple-pay-button-width', '100%')
+    this.applePay.btn.style.setProperty('--apple-pay-button-height', '20px')
+    this.applePay.btn.style.borderRadius = '4px'
+    this.applePay.btn.style.border = 'solid 1px #DCDEE2'
     this.applePay.btn.onclick = this.clickApplePay
     container.appendChild(this.applePay.btn)
   }
