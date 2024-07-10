@@ -48,6 +48,8 @@ export default class Tokenizer {
   constructor (info: Constructor) {
     // Make sure apikey is set
     if (!info.apikey) { throw new Error('apikey must be set!') }
+    // if apikey does not start with pub_ throw error
+    if (!info.apikey.startsWith('pub_')) { throw new Error('apikey must be a public apikey and must start with pub_') }
     this.apikey = info.apikey
 
     // Set url
