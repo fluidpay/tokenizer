@@ -19,6 +19,14 @@ export interface Constructor {
   settings?: {[key: string]: any}
 }
 
+export interface Address {
+  address?: string
+  city?: string
+  state?: string
+  zip?: string
+  country?: string
+}
+
 export interface GuardianData {
   events: Record<string, unknown>[]
   session_id: string
@@ -155,6 +163,21 @@ export default class Tokenizer {
       event: 'setError',
       data: { input: input }
     })
+  }
+
+  public setBilling(address: Address) {
+    this.postMessage({
+      event: 'setBilling',
+      data: address
+    })
+  }
+
+  public setShipping(address: Address) {
+    this.postMessage({
+      event: 'setShipping',
+      data: address
+    })
+
   }
 
   // Communicate back to child
