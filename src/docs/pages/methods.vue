@@ -35,13 +35,22 @@ export default defineComponent({
           showName: true,
           showTitle: true
         },
+        shipping: {
+          show: true,
+          showTitle: true
+        },
+        billing: {
+          show: true,
+          showTitle: true
+        },
         payment: {
           showTitle: true,
           types: ['card', 'ach']
           // ach: {
           //   sec_code: 'ppd'
           // }
-        }
+        },
+
       }
     })
 
@@ -57,6 +66,26 @@ export default defineComponent({
       if (this.example) {
         this.example.submit()
       }
+    },
+
+    setShipping() {
+      this.example?.setShipping({
+        address: '555 Right town',
+        city: 'Chicago',
+        state: 'IL',
+        zip: '92028',
+        country: 'HU'
+      })
+    },
+
+    setBilling() {
+      this.example?.setBilling({
+        address: '123 Test st',
+        city: 'Awesome Town',
+        state: 'TN',
+        zip: '37135',
+        country: 'HU'
+      })
     },
 
     setErrorOnCvv() {
@@ -144,6 +173,22 @@ export default defineComponent({
           }
         })
 
+        example.setShipping({
+          address: '555 Right town',
+          city: 'Chicago',
+          state: 'IL',
+          zip: '92028',
+          country: 'US'
+        })
+
+        example.setBilling({
+          address: '123 Test st',
+          city: 'Awesome Town',
+          state: 'TN',
+          zip: '37135',
+          country: 'US'
+        })
+
         // Set expiration date on card payment
         example.setExpDate('09/12')
 
@@ -160,6 +205,14 @@ export default defineComponent({
       <div class="example-method" />
       <button @click="submit()">
         Pay
+      </button>
+
+      <button @click="setShipping()">
+        Set Shipping
+      </button>
+
+      <button @click="setBilling()">
+        Set Billing
       </button>
 
       <button @click="setErrorOnCvv()">
