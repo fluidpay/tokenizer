@@ -4,5 +4,12 @@ declare module '*.vue' {
   export default component
 }
 
+declare global {
+  import { ApplePaySession } from '@types/applepayjs/index'
+  interface Window {
+    ApplePaySession: ApplePaySession
+  }
+}
+
 declare module 'prismjs'
 declare module 'prismjs/*'

@@ -73,6 +73,9 @@ export default defineComponent({})
         <router-link to="/threeds">
           3D-Secure
         </router-link>
+        <router-link to="/apple-pay">
+          Apple Pay
+        </router-link>
       </div>
     </div>
   </div>
