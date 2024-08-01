@@ -49,7 +49,7 @@ export interface StylesSettings {
 }
 
 export interface PaymentSettings {
-  types: string[]
+  types: string | string[]
   calculateFees: boolean
   processorId?: string
   showTitle: boolean
