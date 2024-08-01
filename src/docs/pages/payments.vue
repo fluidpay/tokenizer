@@ -31,7 +31,7 @@ export default defineComponent({
             showSecCode: true,
             verifyAccountRouting: true,
 
-            // If payment is ach, set speficic user fields to required
+            // If payment is ach, set specific user fields to required
             // user_required: {
             //   first_name: true,
             //   last_name: true,
