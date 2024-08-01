@@ -1,4 +1,4 @@
-import { AutoPayResult, Settings } from "./types";
+import { AutoPayResult, Settings } from "./types"
 
 export interface Constructor {
   url?: string
@@ -100,6 +100,10 @@ export default class Tokenizer {
         this.settings.id = this.id
         this.settings.apikey = this.apikey
         this.settings.amount = this.amount
+        // Check payent types if string set to array
+        if (typeof this.settings.payment?.types === 'string') {
+          this.settings.payment.types = [this.settings.payment.types]
+        }
         this.setSettings(this.settings)
         this.onLoad() // Call on load
       }
@@ -142,7 +146,7 @@ export default class Tokenizer {
   }
 
   private populateApplePayBtn(container: Element) {
-    this.applePay.btn = document.createElement('apple-pay-button');
+    this.applePay.btn = document.createElement('apple-pay-button')
     this.applePay.btn.setAttribute('buttonstyle', 'white')
     this.applePay.btn.setAttribute('type', 'pay')
     this.applePay.btn.setAttribute('locale', 'en-US')
@@ -157,12 +161,12 @@ export default class Tokenizer {
   private clickApplePay = () => {
     if (!ApplePaySession) {
       console.warn('Apple Pay is not available')
-      return;
+      return
     }
     const applePayConfig = this.settings?.payment?.applePay
     if (!applePayConfig) {
       console.error('Apple Pay is missing from configuration')
-      return;
+      return
     }
 
     // Create ApplePaySession
@@ -171,7 +175,7 @@ export default class Tokenizer {
       'jcb', // v2
       'cartesBancaires', 'eftpos', 'electron', 'elo', 'maestro', 'vPay', // v4
       'mada' // v5
-    ];
+    ]
     const session = new ApplePaySession(applePayConfig.version || 5, {
       countryCode: applePayConfig.payment.countryCode,
       currencyCode: applePayConfig.payment.currencyCode,
@@ -184,7 +188,7 @@ export default class Tokenizer {
       lineItems: applePayConfig.payment.lineItems,
       requiredBillingContactFields: applePayConfig.payment.requiredBillingContactFields,
       requiredShippingContactFields: applePayConfig.payment.requiredShippingContactFields,
-    });
+    })
 
     session.onvalidatemerchant = async (event) => {
       fetch(`${this.url}/api/public/applepay/validatemerchant`, {
@@ -205,7 +209,7 @@ export default class Tokenizer {
           console.error('merchant validation failed')
           session.completeMerchantValidation({error: 'merchant validation failed'})
         })
-    };
+    }
 
     session.onpaymentauthorized = (event) => {
       // Define ApplePayPaymentAuthorizationResult
@@ -214,17 +218,17 @@ export default class Tokenizer {
           status: msg,
         })
         if (msg === 'success') {
-          session.completePayment(ApplePaySession.STATUS_SUCCESS);
+          session.completePayment(ApplePaySession.STATUS_SUCCESS)
         } else {
-          session.completePayment(ApplePaySession.STATUS_FAILURE);
+          session.completePayment(ApplePaySession.STATUS_FAILURE)
         }
       }).catch(() => {
-        session.completePayment(ApplePaySession.STATUS_FAILURE);
+        session.completePayment(ApplePaySession.STATUS_FAILURE)
       })
-    };
+    }
 
     try {
-      session.begin();
+      session.begin()
     } catch (e) {
       console.error(e)
     }
@@ -337,9 +341,9 @@ export default class Tokenizer {
       return
     }
 
-    const startTimeInMs = Date.now();
-    const checkFrequencyInMs = 1000;
-    const timeoutInMs = 10000;
+    const startTimeInMs = Date.now()
+    const checkFrequencyInMs = 1000
+    const timeoutInMs = 10000 as number
 
     (function loopSearch() {
       if (typeof selector === 'string' && document.querySelector(selector) !== null) {
