@@ -22,6 +22,9 @@ export default defineComponent({
       //   }
       // },
       settings: {
+        // payment: {
+        //   types: ['card'] // set to string to test force payment selection
+        // },
         paay: {
           sandbox: false,
           // forceDisabled: true,
