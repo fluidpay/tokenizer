@@ -52,6 +52,7 @@ export interface PaymentSettings {
   types: string | string[]
   calculateFees: boolean
   processorId?: string
+  forcePaymentSelection: boolean
   showTitle: boolean
   showLabel: boolean
   placeholderCreditCard: null | string

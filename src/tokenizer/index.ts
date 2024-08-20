@@ -103,6 +103,10 @@ export default class Tokenizer {
         // Check payent types if string set to array
         if (typeof this.settings.payment?.types === 'string') {
           this.settings.payment.types = [this.settings.payment.types]
+
+          // If type is a string we need to implement an old way of dealing
+          // with force showing the payment selection
+          this.settings.payment.forcePaymentSelection = true
         }
         this.setSettings(this.settings)
         this.onLoad() // Call on load
