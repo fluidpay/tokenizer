@@ -127,11 +127,13 @@ export default class Tokenizer {
   }
 
   private getTokenizerURL(): string {
-    const urlPrefix = this.url
-    if (!urlPrefix && window.location.href.includes('localhost')) {
+    // If the urlPrefix is the default {{formUrl}}
+    // and your on localhost then use localhost dev url
+    // otherwise use the url set
+    if (this.url === '{{formUrl}}' && window.location.href.includes('localhost')) {
       return localDevUrl.replace(/\/$/, '') + pathUrl
     } else {
-      return urlPrefix.replace(/\/$/, '') + pathUrl
+      return this.url.replace(/\/$/, '') + pathUrl
     }
   }
 

@@ -16,6 +16,7 @@ export default defineComponent({
     this.example = new Tokenizer({
       apikey: testapikey,
       container: '#latediv',
+      // url: 'https://www.google.com',
       // settings: {
       //   payment: {
       //     calculateFees: false
