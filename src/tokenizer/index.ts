@@ -37,14 +37,13 @@ export interface Message {
 }
 
 const url = '{{formUrl}}'
-const localDevUrl: string = 'http://localhost:8082'
 const pathUrl: string = '/api/tokenizer'
 
 export default class Tokenizer {
   public id: string
-  public apikey: string
+  public apikey: string // required
 
-  public url: string
+  public url: string // required
   public amount: string | undefined
 
   public iframe: HTMLIFrameElement
@@ -62,7 +61,7 @@ export default class Tokenizer {
     if (!info.apikey.startsWith('pub_')) { throw new Error('apikey must be a public apikey and must start with pub_') }
     this.apikey = info.apikey
 
-    // Set url
+    // Set url - if not set use what get set for {{formUrl}}
     this.url = (info.url && info.url !== '' ? info.url : url) // Use constructor url passed, or default url var
 
     // set amount
@@ -127,14 +126,7 @@ export default class Tokenizer {
   }
 
   private getTokenizerURL(): string {
-    // If the urlPrefix is the default {{formUrl}}
-    // and your on localhost then use localhost dev url
-    // otherwise use the url set
-    if (this.url === '{{formUrl}}' && window.location.href.includes('localhost')) {
-      return localDevUrl.replace(/\/$/, '') + pathUrl
-    } else {
-      return this.url.replace(/\/$/, '') + pathUrl
-    }
+    return this.url.replace(/\/$/, '') + pathUrl
   }
 
   private initApplePay(container: Element) : void {
