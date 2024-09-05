@@ -19,17 +19,17 @@ export interface PaaySettings {
 
 export interface UserSettings {
   // Ask for Name - default false
-  showName: boolean,
+  showName: boolean
   // Ask for Email - default false
-  showEmail: boolean,
+  showEmail: boolean
   // Ask for Phone Number - default false
-  showPhone: boolean,
+  showPhone: boolean
   // Show section title
   showTitle: boolean
   // Show section label
   showLabel: boolean
   // show user info in single line - default false
-  showInline: boolean,
+  showInline: boolean
 }
 
 export interface ShippingSettings {
@@ -99,11 +99,11 @@ export interface UserRequiredSettings {
 }
 
 export interface BillingRequiredSettings {
-  address: boolean,
-  city: boolean,
-  state: boolean,
-  zip: boolean,
-  country: boolean,
+  address: boolean
+  city: boolean
+  state: boolean
+  zip: boolean
+  country: boolean
 }
 
 export type AutoPayResult = 'success' | 'fail'
@@ -113,5 +113,5 @@ export type ApplePayAutoPayEvent = ApplePayJS.ApplePayPaymentAuthorizedEvent
 export interface ApplePayPayment extends Partial<ApplePayJS.ApplePayPaymentRequest> {
   countryCode: string
   currencyCode: string
-  total: ApplePayJS.ApplePayLineItem;
+  total: ApplePayJS.ApplePayLineItem
 }
