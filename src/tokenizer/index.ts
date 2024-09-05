@@ -43,7 +43,7 @@ export default class Tokenizer {
   public id: string
   public apikey: string // required
 
-  public url: string // required
+  public url: string
   public amount: string | undefined
 
   public iframe: HTMLIFrameElement
