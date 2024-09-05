@@ -13,6 +13,7 @@ export default defineComponent({
   },
   mounted () {
     this.example = new Tokenizer({
+      url: 'http://localhost:8082',
       apikey: testapikey,
       container: this.$refs.example as HTMLDivElement,
       // onPaymentChange: (type: string) => {
@@ -99,6 +100,7 @@ export default defineComponent({
       <code class="language-javascript">
         // Example Code
         var example = new Tokenizer({
+          url: '', // Optional - Only pass if using a different domain than your on
           apikey: 'key here',
           container: document.querySelector('#div container'),
           submission: (resp) => {

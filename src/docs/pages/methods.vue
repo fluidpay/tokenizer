@@ -19,6 +19,7 @@ export default defineComponent({
   mounted () {
     // Intiate a new tokenizer
     this.example = new Tokenizer({
+      url: 'http://localhost:8082',
       apikey: testapikey,
       container: document.querySelector('.methods .example-method'),
 

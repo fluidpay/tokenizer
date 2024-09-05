@@ -14,9 +14,10 @@ export default defineComponent({
   },
   mounted () {
     this.example = new Tokenizer({
+      // url: 'https://sandbox.basysiqpro.com',
+      url: 'http://localhost:8082',
       apikey: testapikey,
       container: '#latediv',
-      // url: 'https://www.google.com',
       // settings: {
       //   payment: {
       //     calculateFees: false

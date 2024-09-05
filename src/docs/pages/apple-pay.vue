@@ -19,7 +19,7 @@ export default defineComponent({
   mounted () {
     this.example = new Tokenizer({
       apikey: testapikey,
-      url: '',
+      url: 'http://localhost:8082',
       container: this.$refs.example as HTMLDivElement,
       submission: (resp: any) => {
         this.submitResponse = resp
@@ -91,6 +91,7 @@ export default defineComponent({
       <code class="language-javascript">
         // Example Code
         var example = new Tokenizer({
+          url: '', // Optional - Only pass if using a different domain than your on
           apikey: 'key here',
           container: document.querySelector('#div container'),
           submission: (resp) => {

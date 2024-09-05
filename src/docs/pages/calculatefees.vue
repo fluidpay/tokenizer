@@ -15,6 +15,7 @@ export default defineComponent({
   },
   mounted () {
     this.example = new Tokenizer({
+      url: 'http://localhost:8082',
       apikey: testapikey,
       amount: this.amount,
       container: this.$refs.example as HTMLDivElement,
@@ -68,6 +69,7 @@ export default defineComponent({
       <code class="language-javascript">
         // Tokenizer
         var tokenizer = new Tokenizer({
+          url: '', // Optional - Only pass if using a different domain than your on
           apikey: apikey,
           amount: 1.00,
           container: this.$refs.example as HTMLDivElement,

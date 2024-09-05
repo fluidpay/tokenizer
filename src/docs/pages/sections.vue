@@ -13,6 +13,7 @@ export default defineComponent({
   },
   mounted () {
     this.exampleFull = new Tokenizer({
+      url: 'http://localhost:8082',
       apikey: testapikey,
       container: document.querySelector('#exampleFull') as HTMLDivElement,
       submission: (resp: any) => {
@@ -66,6 +67,7 @@ export default defineComponent({
       <code class="language-javascript">
         // Example Code
         var example = new Tokenizer({
+          url: '', // Optional - Only pass if using a different domain than your on
           apikey: 'key here',
           container: document.querySelector('#div container'),
           submission: (resp) => {
