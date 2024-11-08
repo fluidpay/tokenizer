@@ -1,9 +1,13 @@
 import path from 'path';
+import { fileURLToPath } from 'url';
 import typescript from '@rollup/plugin-typescript';
 import { defineConfig } from 'rollup';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 export default defineConfig({
-  input: './index.ts',
+  input: fileURLToPath(new URL('index.ts', import.meta.url)),
   plugins: [
     typescript({ tsconfig: './tsconfig.json' }),
   ],
