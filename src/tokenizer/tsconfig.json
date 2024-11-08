@@ -2,6 +2,8 @@
   "compilerOptions": {
     "declaration": true, // Generates corresponding '.d.ts' file.
     "strict": true,
-    "outDir": "../../dist" // Output to dist folder
+    "outDir": "../../dist", // Output to dist folder
+    "types": ["node"],
+    "esModuleInterop": true
   }
 }

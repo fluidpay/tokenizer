@@ -1,33 +1,26 @@
-import { RollupOptions } from 'rollup'
-import { fileURLToPath } from 'node:url';
+import path from 'path';
 import typescript from '@rollup/plugin-typescript';
+import { defineConfig } from 'rollup';
 
-const libConfig: RollupOptions = {
-    plugins: [typescript({ tsconfig: 'tsconfig.build.json' })],
-    input: fileURLToPath(new URL('index.ts', import.meta.url)),
-    output: [
-        {
-            name: 'tokenizer.cjs.js',
-            file: 'dist/tokenizer.cjs.js',
-            format: 'cjs'
-        },
-        {
-            name: 'tokenizer.amd.js',
-            file: 'dist/tokenizer.amd.js',
-            format: 'amd'
-        },
-        {
-            name: 'tokenizer.umd.js',
-            file: 'dist/tokenizer.umd.js',
-            format: 'umd'
-        },
-        {
-            name: 'tokenizer.js',
-            file: 'dist/tokenizer.js',
-            format: 'umd'
-        }
-    ]
-};
+const outputs = [
+  { format: 'iife', file: 'tokenizer.var.js', name: 'Tokenizer' },
+  { format: 'cjs', file: 'tokenizer.commonjs2.js' },
+  { format: 'amd', file: 'tokenizer.amd.js' },
+  { format: 'umd', file: 'tokenizer.umd.js', name: 'Tokenizer' },
+  { format: 'umd', file: 'tokenizer.js', name: 'Tokenizer' },
+];
 
-
-export default [libConfig]
+export default defineConfig({
+  input: './index.ts',  // Entry point
+  plugins: [
+    typescript({ tsconfig: './tsconfig.json' }),  // Handles .ts files
+  ],
+  output: outputs.map(({ format, file, name }) => ({
+    dir: path.resolve(__dirname, '../../dist'),
+    format,
+    name,        // Library name for iife and umd
+    file,
+    exports: 'default',  // Equivalent to `libraryExport: 'default'` in webpack
+  })),
+  external: [],  // Specify dependencies to exclude if necessary
+});
