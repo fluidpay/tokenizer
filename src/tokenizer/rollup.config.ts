@@ -2,25 +2,40 @@ import path from 'path';
 import typescript from '@rollup/plugin-typescript';
 import { defineConfig } from 'rollup';
 
-const outputs = [
-  { format: 'iife', file: 'tokenizer.var.js', name: 'Tokenizer' },
-  { format: 'cjs', file: 'tokenizer.commonjs2.js' },
-  { format: 'amd', file: 'tokenizer.amd.js' },
-  { format: 'umd', file: 'tokenizer.umd.js', name: 'Tokenizer' },
-  { format: 'umd', file: 'tokenizer.js', name: 'Tokenizer' },
-];
-
 export default defineConfig({
-  input: './index.ts',  // Entry point
+  input: './index.ts',
   plugins: [
-    typescript({ tsconfig: './tsconfig.json' }),  // Handles .ts files
+    typescript({ tsconfig: './tsconfig.json' }),
   ],
-  output: outputs.map(({ format, file, name }) => ({
-    dir: path.resolve(__dirname, '../../dist'),
-    format,
-    name,        // Library name for iife and umd
-    file,
-    exports: 'default',  // Equivalent to `libraryExport: 'default'` in webpack
-  })),
-  external: [],  // Specify dependencies to exclude if necessary
+  output: [
+    {
+      file: path.resolve(__dirname, '../../dist/tokenizer.var.js'),
+      format: 'iife',
+      name: 'Tokenizer',
+      exports: 'default',
+    },
+    {
+      file: path.resolve(__dirname, '../../dist/tokenizer.commonjs2.js'),
+      format: 'cjs',
+      exports: 'default',
+    },
+    {
+      file: path.resolve(__dirname, '../../dist/tokenizer.amd.js'),
+      format: 'amd',
+      exports: 'default',
+    },
+    {
+      file: path.resolve(__dirname, '../../dist/tokenizer.umd.js'),
+      format: 'umd',
+      name: 'Tokenizer',
+      exports: 'default',
+    },
+    {
+      file: path.resolve(__dirname, '../../dist/tokenizer.js'),
+      format: 'umd',
+      name: 'Tokenizer',
+      exports: 'default',
+    },
+  ],
+  external: [],
 });
