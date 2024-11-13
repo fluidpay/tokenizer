@@ -6,7 +6,7 @@ import { fileURLToPath, URL } from 'node:url'
 export default defineConfig({
     plugins: [vue()],
     server: {
-        port: 1111
+        port: 8081
     },
     build: {
         rollupOptions: {
