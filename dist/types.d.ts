@@ -37,9 +37,10 @@ export interface StylesSettings {
     [key: string]: any;
 }
 export interface PaymentSettings {
-    types: string[];
+    types: string | string[];
     calculateFees: boolean;
     processorId?: string;
+    forcePaymentSelection: boolean;
     showTitle: boolean;
     showLabel: boolean;
     placeholderCreditCard: null | string;
