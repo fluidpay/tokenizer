@@ -135,7 +135,7 @@ export default class Tokenizer {
     }
 
     const applePayScript = document.createElement('script')
-    const applePaySDKUrl = 'https://applepay.cdn-apple.com/jsapi/v1.1.0/apple-pay-sdk.js'
+    const applePaySDKUrl = 'https://applepay.cdn-apple.com/jsapi/1.latest/apple-pay-sdk.js'
     applePayScript.setAttribute('src', applePaySDKUrl)
     applePayScript.setAttribute('async', '')
     applePayScript.setAttribute('crossorigin', '')

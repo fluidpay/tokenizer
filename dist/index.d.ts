@@ -12,6 +12,13 @@ export interface Constructor {
     submission: (response: any) => void;
     settings?: Settings;
 }
+export interface Address {
+    address?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+    country?: string;
+}
 export interface GuardianData {
     events: Record<string, unknown>[];
     session_id: string;
@@ -46,6 +53,8 @@ export default class Tokenizer {
     submit(amount?: string): void;
     setExpDate(expDate: string): void;
     setError(input: string): void;
+    setBilling(address: Address): void;
+    setShipping(address: Address): void;
     postMessage(msg: Message): void;
     onLoad: () => void;
     validCard: (card: any) => void;
