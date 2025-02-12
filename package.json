@@ -7,7 +7,7 @@
   "license": "Apache-2.0",
   "repository": "https://github.com/fluidpay/fluidpay-tokenizer",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --config vite.config.docs.ts",
     "serve": "vite preview",
     "build": "rollup --config src/tokenizer/rollup.config.ts --configPlugin typescript && npm run build:tsc",
     "build:tsc": "vue-tsc --declaration -p tsconfig.build.json",
@@ -34,13 +34,11 @@
     "rollup": "^4.24.4",
     "rollup-plugin-scss": "^4.0.0",
     "sass": "^1.69.7",
+    "tslib": "^2.6.3",
     "typescript": "^5.6.3",
     "vite": "^5.3.5",
     "vue": "^3.4.4",
     "vue-router": "^4.2.5",
     "vue-tsc": "^2.0.29"
-  },
-  "dependencies": {
-    "tslib": "^2.6.3"
   }
 }
